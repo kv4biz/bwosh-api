@@ -5,7 +5,14 @@ interface SubscribeForm {
   email: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Allow requests from your frontend
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow these HTTP methods
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
+
   if (req.method === "POST") {
     try {
       const { email }: SubscribeForm = req.body;
@@ -24,13 +31,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
       });
 
-// Email to Bwosh Interiors
-const adminMailOptions = {
-  from: `"Bwosh Interiors Subscription" <${process.env.EMAIL_USER}>`,
-  to: `${process.env.EMAIL_USER}`,
-  subject: "✨ New Subscriber Alert for Bwosh Interiors ✨",
-  text: `You have a new subscriber: ${email}`,
-  html: `
+      // Email to Bwosh Interiors
+      const adminMailOptions = {
+        from: `"Bwosh Interiors Subscription" <${process.env.EMAIL_USER}>`,
+        to: `${process.env.EMAIL_USER}`,
+        subject: "✨ New Subscriber Alert for Bwosh Interiors ✨",
+        text: `You have a new subscriber: ${email}`,
+        html: `
    <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,18 +135,18 @@ const adminMailOptions = {
 </html>
 
   `,
-};
-// Send admin email
-await transporter.sendMail(adminMailOptions);
-console.log("Admin email sent successfully.");
+      };
+      // Send admin email
+      await transporter.sendMail(adminMailOptions);
+      console.log("Admin email sent successfully.");
 
-// Welcome email to subscriber
-const subscriberMailOptions = {
-  from: `"Bwosh Interiors" <${process.env.EMAIL_USER}>`,
-  to: email, // Subscriber's email
-  subject: "🎉 Welcome to Bwosh Interiors!",
-  text: `Welcome to Bwosh Interiors, ${email}!`,
-  html: `
+      // Welcome email to subscriber
+      const subscriberMailOptions = {
+        from: `"Bwosh Interiors" <${process.env.EMAIL_USER}>`,
+        to: email, // Subscriber's email
+        subject: "🎉 Welcome to Bwosh Interiors!",
+        text: `Welcome to Bwosh Interiors, ${email}!`,
+        html: `
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -305,13 +312,14 @@ const subscriberMailOptions = {
 </html>
 
   `,
-};
-// Send subscriber email
-await transporter.sendMail(subscriberMailOptions);
-console.log("Subscriber email sent successfully.");
+      };
+      // Send subscriber email
+      await transporter.sendMail(subscriberMailOptions);
+      console.log("Subscriber email sent successfully.");
 
       return res.status(200).json({
-        message: "Subscription successful! Welcome email sent to the subscriber.",
+        message:
+          "Subscription successful! Welcome email sent to the subscriber.",
       });
     } catch (error) {
       console.error("Error sending email:", error);

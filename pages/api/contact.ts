@@ -7,7 +7,13 @@ interface ContactForm {
   message: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Allow requests from your frontend
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow these HTTP methods
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
   if (req.method === "POST") {
     try {
       const { name, email, message }: ContactForm = req.body;
@@ -25,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       // Admin email
-    const adminMailOptions = {
+      const adminMailOptions = {
         from: `"Contact Form Submission" <${process.env.EMAIL_USER}>`,
         to: `${process.env.EMAIL_USER}`,
         subject: `✨ New Contact Form Submission from ${name} ✨`,
@@ -145,8 +151,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await transporter.sendMail(adminMailOptions);
       console.log("Admin email sent successfully.");
 
-       // User confirmation email
-    const userMailOptions = {
+      // User confirmation email
+      const userMailOptions = {
         from: `"Bwosh Interiors" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "🌟 Thank You for Contacting Bwosh Interiors! 🌟",
@@ -293,9 +299,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   </html> 
       `,
       };
-   // Send email to contact user
-   await transporter.sendMail(userMailOptions);
-   console.log("Subscriber email sent successfully.");
+      // Send email to contact user
+      await transporter.sendMail(userMailOptions);
+      console.log("Subscriber email sent successfully.");
 
       return res.status(200).json({ message: "Message sent successfully!" });
     } catch (error) {
