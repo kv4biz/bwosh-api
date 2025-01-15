@@ -14,6 +14,11 @@ export default async function handler(
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Allow requests from your frontend
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow these HTTP methods
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
+
+  if (req.method === "OPTIONS") {
+    res.status(200).end(); // Respond with 200 for preflight
+    return;
+  }
   if (req.method === "POST") {
     try {
       const { name, email, message }: ContactForm = req.body;
