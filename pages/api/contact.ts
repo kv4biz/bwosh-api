@@ -301,7 +301,7 @@ export async function POST(req: Request) {
 
     // Send email to contact user
     await transporter.sendMail(userMailOptions);
-    console.log("Subscriber email sent successfully.");
+    console.log("user email sent successfully.");
 
     return NextResponse.json(
       { message: "Message sent successfully!" },
