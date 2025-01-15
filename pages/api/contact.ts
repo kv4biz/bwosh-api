@@ -7,16 +7,28 @@ interface ContactForm {
   message: string;
 }
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://bwosh-decor.vercel.app",
+  "https://bwosh.com",
+];
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000"); // Allow requests from your frontend
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // Allow these HTTP methods
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
-
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "null");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
-    res.status(200).end(); // Respond with 200 for preflight
+    res.status(200).end();
     return;
   }
   if (req.method === "POST") {
